@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>そなログ - ダッシュボード</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">🚨 そなログ</a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link active">ホーム</a>
+                <a href="emergency-bag.html" class="nav-link">防災バッグ</a>
+                <a href="contacts.html" class="nav-link">緊急連絡先</a>
+                <a href="evacuation.html" class="nav-link">避難場所</a>
+                <a href="tips.html" class="nav-link">防災知識</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>そなログ ダッシュボード</h1>
+                <p>災害に備えて、日頃の準備を記録・管理しましょう</p>
+            </div>
+
+            <div id="expiry-alert" class="alert alert-warning" style="display: none;">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <h3>期限切れ注意！</h3>
+                    <p>以下のアイテムの期限が近づいています：</p>
+                    <div id="expiry-items"></div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">防災用品</span>
+                        <div class="stat-icon blue">📦</div>
+                    </div>
+                    <div class="stat-value" id="total-items">0</div>
+                    <div class="stat-description">登録済みアイテム</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">期限切れ注意</span>
+                        <div class="stat-icon orange">⚠️</div>
+                    </div>
+                    <div class="stat-value" id="expiring-items">0</div>
+                    <div class="stat-description">30日以内に期限切れ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">緊急連絡先</span>
+                        <div class="stat-icon green">👥</div>
+                    </div>
+                    <div class="stat-value" id="total-contacts">3</div>
+                    <div class="stat-description">登録済み連絡先</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">避難場所</span>
+                        <div class="stat-icon purple">📍</div>
+                    </div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-description">近隣の避難場所</div>
+                </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📅 今日のチェック項目</h2>
+                        <p>定期的に確認すべき防災準備</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="check-item">
+                            <span>懐中電灯の動作確認</span>
+                            <span class="badge">週1回</span>
+                        </div>
+                        <div class="check-item">
+                            <span>ラジオの動作確認</span>
+                            <span class="badge">週1回</span>
+                        </div>
+                        <div class="check-item">
+                            <span>非常用水の確認</span>
+                            <span class="badge">月1回</span>
+                        </div>
+                        <div class="check-item">
+                            <span>家族との連絡方法確認</span>
+                            <span class="badge">月1回</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📚 防災豆知識</h2>
+                        <p>災害時に役立つ知識</p>
+                    </div>
+                    <div class="card-content">
+                        <div class="tip-item blue">
+                            <h4>地震発生時の行動</h4>
+                            <p>まず身の安全を確保し、机の下に隠れるか、頭を保護してください。揺れが収まったら火の始末をし、避難経路を確保しましょう。</p>
+                        </div>
+                        <div class="tip-item green">
+                            <h4>非常用水の目安</h4>
+                            <p>1人1日3リットルが目安です。最低3日分、できれば1週間分を備蓄しましょう。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // ダッシュボード初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboardStats();
+            checkExpiringItems();
+        });
+
+        function updateDashboardStats() {
+            const items = getEmergencyItems();
+            const contacts = getEmergencyContacts();
+            
+            document.getElementById('total-items').textContent = items.length;
+            document.getElementById('total-contacts').textContent = contacts.length + 3; // +3 for default contacts
+        }
+
+        function checkExpiringItems() {
+            const items = getEmergencyItems();
+            const now = new Date();
+            const thirtyDaysFromNow = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+
+            const expiringItems = items.filter(item => {
+                if (!item.expiryDate) return false;
+                const expiryDate = new Date(item.expiryDate);
+                return expiryDate <= thirtyDaysFromNow && expiryDate >= now;
+            });
+
+            document.getElementById('expiring-items').textContent = expiringItems.length;
+
+            if (expiringItems.length > 0) {
+                const alertDiv = document.getElementById('expiry-alert');
+                const itemsDiv = document.getElementById('expiry-items');
+                
+                itemsDiv.innerHTML = '';
+                expiringItems.forEach(item => {
+                    const daysLeft = Math.ceil((new Date(item.expiryDate) - now) / (1000 * 60 * 60 * 24));
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'expiry-item';
+                    itemDiv.innerHTML = `
+                        <span class="item-name">${item.name}</span>
+                        <div class="item-badges">
+                            <span class="badge secondary">${item.category}</span>
+                            <span class="badge ${daysLeft <= 7 ? 'danger' : 'warning'}">あと${daysLeft}日</span>
+                        </div>
+                    `;
+                    itemsDiv.appendChild(itemDiv);
+                });
+                
+                alertDiv.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

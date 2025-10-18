@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>避難場所情報 - そなログ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">🚨 そなログ</a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">ホーム</a>
+                <a href="emergency-bag.html" class="nav-link">防災バッグ</a>
+                <a href="contacts.html" class="nav-link">緊急連絡先</a>
+                <a href="evacuation.html" class="nav-link active">避難場所</a>
+                <a href="tips.html" class="nav-link">防災知識</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>避難場所情報</h1>
+                <p>お近くの避難場所を確認しておきましょう</p>
+            </div>
+
+            <div class="content-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>避難場所の種類</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="evacuation-type">
+                            <span class="badge blue">指定避難所</span>
+                            <div>
+                                <h4>長期滞在可能な施設</h4>
+                                <p>学校の体育館や公民館など、数日間滞在できる施設</p>
+                            </div>
+                        </div>
+                        <div class="evacuation-type">
+                            <span class="badge green">福祉避難所</span>
+                            <div>
+                                <h4>要配慮者向け施設</h4>
+                                <p>高齢者や障害者など、特別な配慮が必要な方向けの施設</p>
+                            </div>
+                        </div>
+                        <div class="evacuation-type">
+                            <span class="badge orange">一時避難場所</span>
+                            <div>
+                                <h4>緊急時の一時避難</h4>
+                                <p>火災や地震発生時に一時的に避難する場所</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h2>避難時の注意点</h2>
+                    </div>
+                    <div class="card-content">
+                        <div class="evacuation-tips">
+                            <div class="tip-number">1</div>
+                            <p>避難する前に火の始末と電気のブレーカーを切る</p>
+                        </div>
+                        <div class="evacuation-tips">
+                            <div class="tip-number">2</div>
+                            <p>動きやすい服装で、荷物は最小限に</p>
+                        </div>
+                        <div class="evacuation-tips">
+                            <div class="tip-number">3</div>
+                            <p>近所の人と声をかけ合って避難する</p>
+                        </div>
+                        <div class="evacuation-tips">
+                            <div class="tip-number">4</div>
+                            <p>車での避難は控え、徒歩で避難する</p>
+                        </div>
+                        <div class="evacuation-tips">
+                            <div class="tip-number">5</div>
+                            <p>避難場所では係員の指示に従う</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="evacuation-sites">
+                <div class="evacuation-site">
+                    <div class="site-header">
+                        <div>
+                            <h3>中央小学校</h3>
+                            <p class="site-address">📍 東京都渋谷区中央1-2-3</p>
+                        </div>
+                        <span class="badge blue">指定避難所</span>
+                    </div>
+                    <div class="site-content">
+                        <div class="site-info">
+                            <div class="info-item">
+                                <span class="info-icon">👥</span>
+                                <span>収容人数: 500人</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🚶</span>
+                                <span>距離: 徒歩5分</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">📞</span>
+                                <a href="tel:03-1234-5678">03-1234-5678</a>
+                            </div>
+                        </div>
+                        <div class="facilities">
+                            <h4>設備・施設</h4>
+                            <div class="facility-tags">
+                                <span class="facility-tag">体育館</span>
+                                <span class="facility-tag">校庭</span>
+                                <span class="facility-tag">給水設備</span>
+                                <span class="facility-tag">非常用電源</span>
+                            </div>
+                        </div>
+                        <div class="site-notes">
+                            <strong>備考:</strong> ペット同伴可能
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evacuation-site">
+                    <div class="site-header">
+                        <div>
+                            <h3>区民センター</h3>
+                            <p class="site-address">📍 東京都渋谷区中央2-3-4</p>
+                        </div>
+                        <span class="badge green">福祉避難所</span>
+                    </div>
+                    <div class="site-content">
+                        <div class="site-info">
+                            <div class="info-item">
+                                <span class="info-icon">👥</span>
+                                <span>収容人数: 200人</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🚶</span>
+                                <span>距離: 徒歩8分</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">📞</span>
+                                <a href="tel:03-2345-6789">03-2345-6789</a>
+                            </div>
+                        </div>
+                        <div class="facilities">
+                            <h4>設備・施設</h4>
+                            <div class="facility-tags">
+                                <span class="facility-tag">多目的ホール</span>
+                                <span class="facility-tag">和室</span>
+                                <span class="facility-tag">バリアフリー</span>
+                                <span class="facility-tag">医務室</span>
+                            </div>
+                        </div>
+                        <div class="site-notes">
+                            <strong>備考:</strong> 高齢者・障害者優先
+                        </div>
+                    </div>
+                </div>
+
+                <div class="evacuation-site">
+                    <div class="site-header">
+                        <div>
+                            <h3>中央公園</h3>
+                            <p class="site-address">📍 東京都渋谷区中央3-4-5</p>
+                        </div>
+                        <span class="badge orange">一時避難場所</span>
+                    </div>
+                    <div class="site-content">
+                        <div class="site-info">
+                            <div class="info-item">
+                                <span class="info-icon">👥</span>
+                                <span>収容人数: 1000人</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-icon">🚶</span>
+                                <span>距離: 徒歩3分</span>
+                            </div>
+                        </div>
+                        <div class="facilities">
+                            <h4>設備・施設</h4>
+                            <div class="facility-tags">
+                                <span class="facility-tag">広場</span>
+                                <span class="facility-tag">防災倉庫</span>
+                                <span class="facility-tag">かまどベンチ</span>
+                            </div>
+                        </div>
+                        <div class="site-notes">
+                            <strong>備考:</strong> 火災時の一時避難に使用
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

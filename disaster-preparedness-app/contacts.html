@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>緊急連絡先 - そなログ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">🚨 そなログ</a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">ホーム</a>
+                <a href="emergency-bag.html" class="nav-link">防災バッグ</a>
+                <a href="contacts.html" class="nav-link active">緊急連絡先</a>
+                <a href="evacuation.html" class="nav-link">避難場所</a>
+                <a href="tips.html" class="nav-link">防災知識</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1>緊急連絡先</h1>
+                    <p>災害時の重要な連絡先を記録・管理しましょう</p>
+                </div>
+                <button class="btn btn-primary" onclick="showAddContactForm()">
+                    ➕ 連絡先追加
+                </button>
+            </div>
+
+            <div id="add-contact-form" class="card" style="display: none;">
+                <div class="card-header">
+                    <h2>新しい連絡先を追加</h2>
+                </div>
+                <div class="card-content">
+                    <form id="contact-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="contact-name">名前</label>
+                                <input type="text" id="contact-name" placeholder="例: 田中太郎" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-relationship">続柄・関係</label>
+                                <input type="text" id="contact-relationship" placeholder="例: 家族、友人、職場">
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-phone">電話番号</label>
+                                <input type="tel" id="contact-phone" placeholder="例: 090-1234-5678" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="contact-email">メールアドレス</label>
+                                <input type="email" id="contact-email" placeholder="例: example@email.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-address">住所</label>
+                            <input type="text" id="contact-address" placeholder="例: 東京都渋谷区...">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">追加</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideAddContactForm()">キャンセル</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="contacts-grid" class="items-grid">
+                <!-- 連絡先がここに表示されます -->
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        const defaultContacts = [
+            {
+                id: '1',
+                name: '警察',
+                relationship: '緊急通報',
+                phone: '110',
+                email: '',
+                address: '',
+                isDefault: true
+            },
+            {
+                id: '2',
+                name: '消防・救急',
+                relationship: '緊急通報',
+                phone: '119',
+                email: '',
+                address: '',
+                isDefault: true
+            },
+            {
+                id: '3',
+                name: '災害用伝言ダイヤル',
+                relationship: '安否確認',
+                phone: '171',
+                email: '',
+                address: '',
+                isDefault: true
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadContacts();
+            
+            document.getElementById('contact-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addContact();
+            });
+        });
+
+        function showAddContactForm() {
+            document.getElementById('add-contact-form').style.display = 'block';
+        }
+
+        function hideAddContactForm() {
+            document.getElementById('add-contact-form').style.display = 'none';
+            document.getElementById('contact-form').reset();
+        }
+
+        function addContact() {
+            const name = document.getElementById('contact-name').value;
+            const relationship = document.getElementById('contact-relationship').value;
+            const phone = document.getElementById('contact-phone').value;
+            const email = document.getElementById('contact-email').value;
+            const address = document.getElementById('contact-address').value;
+
+            if (!name || !phone) {
+                alert('名前と電話番号は必須です。');
+                return;
+            }
+
+            const contact = {
+                id: Date.now().toString(),
+                name,
+                relationship,
+                phone,
+                email,
+                address,
+                isDefault: false
+            };
+
+            const contacts = getEmergencyContacts();
+            contacts.push(contact);
+            saveEmergencyContacts(contacts);
+            
+            hideAddContactForm();
+            loadContacts();
+        }
+
+        function removeContact(id) {
+            if (confirm('この連絡先を削除しますか？')) {
+                const contacts = getEmergencyContacts();
+                const updatedContacts = contacts.filter(contact => contact.id !== id);
+                saveEmergencyContacts(updatedContacts);
+                loadContacts();
+            }
+        }
+
+        function loadContacts() {
+            const customContacts = getEmergencyContacts();
+            const allContacts = [...defaultContacts, ...customContacts];
+            const contactsGrid = document.getElementById('contacts-grid');
+
+            contactsGrid.innerHTML = '';
+
+            allContacts.forEach(contact => {
+                const contactCard = document.createElement('div');
+                contactCard.className = 'item-card';
+                
+                contactCard.innerHTML = `
+                    <div class="item-header">
+                        <div>
+                            <h3>${contact.name}</h3>
+                            <p class="item-category">
+                                ${contact.relationship}
+                                ${contact.isDefault ? '<span class="badge secondary">システム</span>' : ''}
+                            </p>
+                        </div>
+                        ${!contact.isDefault ? `
+                            <button class="btn-icon btn-danger" onclick="removeContact('${contact.id}')">
+                                🗑️
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="item-content">
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <span class="contact-icon">📞</span>
+                                <a href="tel:${contact.phone}" class="contact-link">${contact.phone}</a>
+                            </div>
+                            ${contact.email ? `
+                                <div class="contact-item">
+                                    <span class="contact-icon">📧</span>
+                                    <a href="mailto:${contact.email}" class="contact-link">${contact.email}</a>
+                                </div>
+                            ` : ''}
+                            ${contact.address ? `
+                                <div class="contact-address">
+                                    <p>${contact.address}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                
+                contactsGrid.appendChild(contactCard);
+            });
+        }
+    </script>
+</body>
+</html>

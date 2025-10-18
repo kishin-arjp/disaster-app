@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>防災バッグ管理 - そなログ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html">🚨 そなログ</a>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">ホーム</a>
+                <a href="emergency-bag.html" class="nav-link active">防災バッグ</a>
+                <a href="contacts.html" class="nav-link">緊急連絡先</a>
+                <a href="evacuation.html" class="nav-link">避難場所</a>
+                <a href="tips.html" class="nav-link">防災知識</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <div>
+                    <h1>防災バッグ管理</h1>
+                    <p>非常用品の在庫と期限を記録・管理しましょう</p>
+                </div>
+                <button class="btn btn-primary" onclick="showAddItemForm()">
+                    ➕ アイテム追加
+                </button>
+            </div>
+
+            <div id="add-item-form" class="card" style="display: none;">
+                <div class="card-header">
+                    <h2>新しいアイテムを追加</h2>
+                </div>
+                <div class="card-content">
+                    <form id="item-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="item-name">アイテム名</label>
+                                <input type="text" id="item-name" placeholder="例: 缶詰パン" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-category">カテゴリ</label>
+                                <select id="item-category" required>
+                                    <option value="">カテゴリを選択</option>
+                                    <option value="食料品">食料品</option>
+                                    <option value="飲料水">飲料水</option>
+                                    <option value="医薬品">医薬品</option>
+                                    <option value="衛生用品">衛生用品</option>
+                                    <option value="工具・用具">工具・用具</option>
+                                    <option value="衣類">衣類</option>
+                                    <option value="その他">その他</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-expiry">消費期限</label>
+                                <input type="date" id="item-expiry">
+                            </div>
+                            <div class="form-group">
+                                <label for="item-quantity">数量</label>
+                                <input type="number" id="item-quantity" min="1" value="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="item-notes">メモ</label>
+                            <input type="text" id="item-notes" placeholder="保管場所や注意事項など">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">追加</button>
+                            <button type="button" class="btn btn-secondary" onclick="hideAddItemForm()">キャンセル</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div id="items-grid" class="items-grid">
+                <!-- アイテムがここに表示されます -->
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <div class="empty-icon">📦</div>
+                <p>まだアイテムが登録されていません。<br>「アイテム追加」ボタンから防災用品を登録しましょう。</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadItems();
+            
+            document.getElementById('item-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addItem();
+            });
+        });
+
+        function showAddItemForm() {
+            document.getElementById('add-item-form').style.display = 'block';
+        }
+
+        function hideAddItemForm() {
+            document.getElementById('add-item-form').style.display = 'none';
+            document.getElementById('item-form').reset();
+        }
+
+        function addItem() {
+            const name = document.getElementById('item-name').value;
+            const category = document.getElementById('item-category').value;
+            const expiryDate = document.getElementById('item-expiry').value;
+            const quantity = parseInt(document.getElementById('item-quantity').value);
+            const notes = document.getElementById('item-notes').value;
+
+            if (!name || !category) {
+                alert('アイテム名とカテゴリは必須です。');
+                return;
+            }
+
+            const item = {
+                id: Date.now().toString(),
+                name,
+                category,
+                expiryDate,
+                quantity,
+                notes
+            };
+
+            const items = getEmergencyItems();
+            items.push(item);
+            saveEmergencyItems(items);
+            
+            hideAddItemForm();
+            loadItems();
+        }
+
+        function removeItem(id) {
+            if (confirm('このアイテムを削除しますか？')) {
+                const items = getEmergencyItems();
+                const updatedItems = items.filter(item => item.id !== id);
+                saveEmergencyItems(updatedItems);
+                loadItems();
+            }
+        }
+
+        function loadItems() {
+            const items = getEmergencyItems();
+            const itemsGrid = document.getElementById('items-grid');
+            const emptyState = document.getElementById('empty-state');
+
+            if (items.length === 0) {
+                itemsGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            itemsGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            itemsGrid.innerHTML = '';
+
+            items.forEach(item => {
+                const itemCard = document.createElement('div');
+                itemCard.className = 'item-card';
+                
+                const expiryBadge = getExpiryBadge(item.expiryDate);
+                
+                itemCard.innerHTML = `
+                    <div class="item-header">
+                        <div>
+                            <h3>${item.name}</h3>
+                            <p class="item-category">${item.category}</p>
+                        </div>
+                        <button class="btn-icon btn-danger" onclick="removeItem('${item.id}')">
+                            🗑️
+                        </button>
+                    </div>
+                    <div class="item-content">
+                        <div class="item-detail">
+                            <span>数量:</span>
+                            <span>${item.quantity}</span>
+                        </div>
+                        ${item.expiryDate ? `
+                            <div class="item-detail">
+                                <span>期限:</span>
+                                <div class="expiry-info">
+                                    <span>${item.expiryDate}</span>
+                                    ${expiryBadge}
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${item.notes ? `
+                            <div class="item-notes">
+                                <p>${item.notes}</p>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                itemsGrid.appendChild(itemCard);
+            });
+        }
+
+        function getExpiryBadge(expiryDate) {
+            if (!expiryDate) return '';
+            
+            const now = new Date();
+            const expiry = new Date(expiryDate);
+            const diffTime = expiry.getTime() - now.getTime();
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays < 0) {
+                return '<span class="badge danger">期限切れ</span>';
+            } else if (diffDays <= 7) {
+                return `<span class="badge danger">あと${diffDays}日</span>`;
+            } else if (diffDays <= 30) {
+                return `<span class="badge warning">あと${diffDays}日</span>`;
+            } else {
+                return `<span class="badge secondary">あと${diffDays}日</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
